@@ -1,0 +1,42 @@
+Welcome Las Vegas Gophers!
+The first meetup of the Las Vegas Go User Group
+2 Sep 2015
+Tags: golang, meetup
+
+Josh Lynn
+CTO & Lead Mobile Engineer, Apartments247.com
+jlynn@apartments247.com
+http://apartments247.com
+@lynnjm7
+
+* A little about the organizer...
+
+* Introductory Stuff
+
+* Survey
+- How many of you are learning Go?
+- Have you started building anything with it?
+
+* Survey(cont.) Which languages did you come from?
+- PHP?
+- JavaScript?
+- Python?
+- Ruby?
+- C/C++?
+- Java?
+- Swift/ObjC?
+- .NET/C#?
+- Any others?
+
+* Go Meetup GitHub
+- [[https://github.com/lvgophers]]
+- All of the talks that are presented with the Go Present tool will be posted in the talks repo.
+- There's a lot of different ways that we can use our GitHub (sample code, group project, etc.)
+- If you would like to be added to the GitHub group, send me your GitHub username.
+
+* What do you want to do?
+- [[https://docs.google.com/document/d/1Mv7Ry9VqE_zNewZ8jPnbzGvhUlsiTLjUldT8DCBsXRE/edit?usp=sharing][Google Doc]]
+- This meetup is about learning and using Go. I'm open to topic suggestions about what you would like to do in future meetups.
+
+* Getting Started with Go
+- Live demo for setting up a local dev environment...
