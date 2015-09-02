@@ -2,7 +2,7 @@ package myAwesomePackage
 
 import "testing"
 
-// START OMIT
+// STARTTEST OMIT
 var fibTests = []struct {
   n        int // input
   expected int // expected result
@@ -24,4 +24,20 @@ func TestFib(t *testing.T) {
     }
   }
 }
-// END OMIT
+// ENDTEST OMIT
+
+// STARTBENCH OMIT
+var result int
+
+func BenchmarkFib(b *testing.B) {
+        var r int
+        for n := 0; n < b.N; n++ {
+                // always record the result of Fib to prevent
+                // the compiler eliminating the function call.
+                r = Fib(10)
+        }
+        // always store the result to a package level variable
+        // so the compiler cannot eliminate the Benchmark itself.
+        result = r
+}
+// ENDBENCH OMIT

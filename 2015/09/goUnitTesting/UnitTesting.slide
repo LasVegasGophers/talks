@@ -66,9 +66,7 @@ The `testing.T` interface to be precise
 - Again, if you really want it, you got it dude (or dudette)!
 .link https://github.com/stretchr/testify
 
-* Benchmarking
-
-* Pro Tips
+* Testing Pro Tips
 
 - Table Driven Tests
 
@@ -76,6 +74,7 @@ The `testing.T` interface to be precise
 - lets you test your external API
 
 - Use Canary tests / Sanity Checks
+- A rough test is better than no test!
 
 * Table Driven Tests In Detail
 - Go lets you have anonymous structs
@@ -84,4 +83,69 @@ The `testing.T` interface to be precise
 .link https://medium.com/@matryer/5-simple-tips-and-tricks-for-writing-unit-tests-in-golang-619653f90742 Shamelessly stolen from Mat Ryer, the Author of Go Programming Blueprints
 
 * Table Driven Test Example
-.code fib_test.go /START OMIT/,/END OMIT/
+.code fib_test.go /STARTTEST OMIT/,/ENDTEST OMIT/
+
+* Benchmarking in Go
+- Go has benchmarking as well as unit testing built into the std lib
+- Why do you care?
+- Because we all like our code to be really fast! Or at least have an objective measure of speed.
+- The benchmarking facility in Go is widely accepted as a reliable standard for measuring the performance of Go code
+- Excellent way of communicating a performance improvement, or a regression, in a reproducible way
+
+* Benchmarking Basics
+- Same File as your tests
+- Functions of the form:
+
+	func BenchmarkXxx(*testing.B)
+
+- Benchmark functions must contain a loop of this form:
+
+	for i := 0; i < *b.N*; i++ { //code that you are benchmarking }
+
+- The benchmark function must run the target code *b.N* times. During benchmark execution, *b.N* is adjusted until the benchmark function lasts long enough to be timed reliably.
+
+- Run the benchmark by running the `test` cmd with the `-bench` flag *and a regex to match test function names*
+- generally use a dot `.` to just run all benchmarks
+
+	> go test -bench .
+
+* Mr. B
+`testing.B`
+- Everything that the `t` interface has + more!
+- `b.N()`
+- `b.RunParallel()`
+- `b.StopTimer()`
+- `b.StartTimer()`
+.link http://golang.org/pkg/testing As usual, read the docs! They are awesome.
+
+* Benchmark results
+- The results of benchmark look like this:
+
+	BenchmarkXxxx    10000000    282 ns/op
+
+- The benchmark ran 10000000 times, and each loop iteration took 282 nanoseconds.
+
+- There are Some flags you can pass to change how benchmark behaves
+- `-benchmem` : Print memory allocation statistics for benchmarks.
+
+- `-benchtime` `t` : Set the minimum benchmark time
+
+.link https://golang.org/cmd/go/#hdr-Description_of_testing_flags see the docs for all the gorey details
+
+* Benchmarking FAQ
+- Each benchmark is run for a minimum of 1 second by default.
+- `b.N` is increased until the function takes at least the mininum amount of time
+- testing package uses a simple average
+-  You can increase the minimum benchmark time using the -benchtime flag to produce a more accurate result
+- If you do not implement the `b.N` loop, the function will run forever because the minimum time is never reached!
+
+* Benchmarking Pro Tips
+- For better or worse, modern CPUs rely heavily on active thermal management which can add noise to benchmark results
+- Watch out for Compiler Optimisations!
+- Always record the result of the function you are benchmarking to prevent the compiler eliminating the function call.
+- Always store the result to a package level variable so the compiler cannot eliminate the Benchmark itself.
+
+.link http://dave.cheney.net/2013/06/30/how-to-write-benchmarks-in-go See Dave Cheney's blog for much more gorey details
+
+* Benchmark Example
+.code fib_test.go /STARTBENCH OMIT/,/ENDBENCH OMIT/
