@@ -38,7 +38,13 @@ The `testing.T` interface to be precise
 .link http://golang.org/pkg/testing See the Go Docs on Testing for much more info
 
 * Let's see some code already!
+`helloGo.go`
 
+.code helloGo.go
+
+`helloGo_test.go`
+
+.code helloGo_test.go
 
 * Where are my Assertions?
 - You don't need 'em!
@@ -59,3 +65,23 @@ The `testing.T` interface to be precise
 
 - Again, if you really want it, you got it dude (or dudette)!
 .link https://github.com/stretchr/testify
+
+* Benchmarking
+
+* Pro Tips
+
+- Table Driven Tests
+
+- Put your tests in a different package
+- lets you test your external API
+
+- Use Canary tests / Sanity Checks
+
+* Table Driven Tests In Detail
+- Go lets you have anonymous structs
+- Make an array of structs that represent inputs and expected outputs
+
+.link https://medium.com/@matryer/5-simple-tips-and-tricks-for-writing-unit-tests-in-golang-619653f90742 Shamelessly stolen from Mat Ryer, the Author of Go Programming Blueprints
+
+* Table Driven Test Example
+.code fib_test.go /START OMIT/,/END OMIT/
