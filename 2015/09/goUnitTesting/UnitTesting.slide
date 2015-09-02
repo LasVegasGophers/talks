@@ -1,0 +1,61 @@
+Unit Testing in Go
+Why Go makes you actually want to write tests 💌
+
+9 Sept 2015
+Tags: go unit testing
+
+Ray Imber
+Software Engineer / part time Taun Taun
+rayimber@gmail.com
+
+* Unit Testing
+- It's like eating your vegetables
+- No one enjoys it, but it's good for your health
+- Setting up a "Test Harness" is hard
+- Go has Testing built into the stdlib! Batteries Included!
+
+* The Basics
+- create a file whose name ends Xxx_test.go
+	myAwesomeProject_test.go
+- import "testing"
+- Write functions of the form:
+
+	func TestXxx(*testing.T)
+
+- Run your tests from the command line
+
+	> go test
+
+* Mr. T
+The `testing.T` interface to be precise
+
+- `T.Fail()`
+- `T.FailNow()`
+- `T.Log()`
+- `T.Logf()`
+- `T.Parallel()`
+
+.link http://golang.org/pkg/testing See the Go Docs on Testing for much more info
+
+* Let's see some code already!
+
+
+* Where are my Assertions?
+- You don't need 'em!
+- They can all be constructed using control structures along with the `T` functions
+- Go is not opinionated about testing
+- You write tests the way that make sense for you
+
+- If you really want assertions. There are packages available:
+.link https://github.com/stretchr/testify
+
+* Are you mocking me?
+- How about writing mocks in go?
+- You don't need 'em!
+- the trouble is, Mock Frameworks creates something extra to learn for anybody who might want to contribute to your project
+- Native go code is always better
+- If you need to mock something that your code relies on, chances are it is a good candidate for an interface
+- Even if you’re relying on an external package that you cannot change, your code can still take an interface that the external types will satisfy
+
+- Again, if you really want it, you got it dude (or dudette)!
+.link https://github.com/stretchr/testify
