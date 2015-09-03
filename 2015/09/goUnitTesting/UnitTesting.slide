@@ -149,3 +149,14 @@ The `testing.T` interface to be precise
 
 * Benchmark Example
 .code fib_test.go /STARTBENCH OMIT/,/ENDBENCH OMIT/
+
+* Testable Documentation
+- Functions of the form `ExampleXxx()`
+- Can also be followed by a suffix, to specify what type of example.
+- Use A special comment to verify the output.
+	func ExampleHello() {
+        fmt.Println("hello")
+        // Output: hello
+	}
+
+.link http://golang.org/pkg/testing/ Docs!
