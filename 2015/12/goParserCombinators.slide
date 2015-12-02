@@ -1,0 +1,187 @@
+Parser Combinators in Go
+Go Combinate!
+
+2 Dec 2015
+Tags: go parser combinator functional programming
+
+Ray Imber
+Software Engineer / part time Taun Taun
+rayimber@gmail.com
+
+* Talk Format
+- This talk is going to follow a trajectory that looks kind of like this:
+.image http://mathinsight.org/media/image/image/exponential_function_two_to_x.png
+
+* Some Background
+- Functional Programming
+- Very academic
+- Very hot right now
+- Normally Lisps / Haskell / ML languages
+- Go can totally do it!
+- The *key* is function pointers
+
+* What is a Parser?
+- A function accepting strings as input and returning some structure as output
+- Typically a parse tree
+- Or a set of indices representing locations in the string where parsing stopped successfully
+
+* Y U WANT Parsers?
+- You are crazy: You want to design your own language or compiler
+- You are slightly less crazy: You want to design a preprocessor to add some kind of Macros to an existing language
+- You are only slightly insane: DSL's
+- Parse XML / JSON / EDN, (insert data serialization format here)
+- Network Packet Analysis (Raw bytes are 'strings' in the theoretical sense)
+- Regex on Steroids (can parse full CFG's, which are more powerful that regural grammars)
+- URL parsing: Crawling, Routing
+
+* Parser Construction methods
+- Table Based Parsing / State Machine (LALR)
+- Recursive Descent Parser
+
+* Table Based Parsers
+- Very fast execution time
+- Hard to generate and debug
+- Need computer assistance
+- Often need a seperate "tokenizer" or "lexer" program to preprocess the input string
+- A language to parse languages
+
+Flavors:
+
+- YACC / BISON / ANTLR
+- Full Disclosure: There is a Go port of YACC
+
+* Recursive Descent Parsers
+- Slower execution time
+- Much easier to write by hand
+- Much easier to debug (You can even unit test them!)
+- Can combine tokeninzing and parsing
+
+Two Popular Flavors:
+
+- PEG
+- Parser Combinators (The father of this technique is Haskell's Parsec library)
+
+* Begin the Recursive Descent
+
+Parser Function Spec:
+
+- Take a String and a pointer to the first character in the string.
+- Try to *match* one or more tokens / characters from the end of the string. Starting from left and going right, check one character at a time.
+- If the match was found, move the pointer to the first character after the match, and return some data structure representing the match.
+- If we go through the entire string and *fail* to find a match, return the pointer to where you started, and return an error / false.
+.image ./tokenize.png
+
+* Hello Parsers
+.code helloWorldParser.go
+
+* Let's Combinate!
+- What if I told you, you can take a bunch of really simple parsers, and combine them to make full language parsers of infinite complexity!
+.image https://imgflip.com/s/meme/Matrix-Morpheus.jpg
+- Well...Technically: "Recursive descent with backtracking is not limited to LL(k) grammars, but is not guaranteed to terminate unless the grammar is LL(k)"
+
+* Boolean Logic and Higher Order Functions
+* Parsers and Combinators
+- A Parser Combinator is made up of "Parsers" and "Combinators"
+- A Combinator *combines" a set of parsers to make a more complicated parser
+- You can feed the result of a combinator into another combinator to just keep buidling up a more and more complicated parser.
+.image http://i.imgur.com/TEvxw25.jpg
+
+* OR
+
+- Take two simple parsers (just functions)
+- Feed the same inputs to both functions and apply boolean "OR" to the results
+- If the "OR" is true, return the result of the first parser
+- If the "OR" is false, return False
+
+* E.X.
+.code helloOrCombinator.go
+
+* AND
+
+- Take two simple parsers
+- Feed the input to the first parser and get the result
+- Feed the input to second parser and get the result
+- Apply boolean "AND" between both results
+- If the "AND" is true, return an array containing the results of both parsers
+- If the "AND" is false, return False
+
+* E.X.
+.code helloAndCombinator.go
+
+* Some Fancier Combinators
+- Technically all you need is AND and OR, but there are some other useful combinators
+
+Maybe
+
+- The famous maybe monad
+- Allows for optional tokens à la the regex *?* operator
+- If the parser fails, it just returns an empty result instead of False
+- This allows the parser to continue parsing instead of stopping on the failed parse.
+
+ListOf / Kleane Plus
+
+- Usually takes an "element" parser, and optionally a "delimiter" parser.
+- Matches a (finite) set of elements seperated by the delimiter
+- E.X. a,b,c,d
+- Note, the "element" and "delimiter" can be complex parsers themselves
+- E.X. (a+b-c)|expr|(d/x,d*x)|expr|(x&y|z)
+
+* E.X.
+.link listOfCombinator.go
+
+* Interesting Notes about Practical Parsers
+- Technically a _pure_ parser is not side effecty, but a _pure_ parser is not very practical
+- They are State Machines
+- They are Monads
+- Are inherently not concurrent
+- Recursion and concurrency tend not to like each other
+- Winding the stack is very concurrent, unwinding it is not
+
+* Software Architecture decisions
+
+Input String Handling:
+
+- Easier to Code: Or Take a string as input, and produce a new string as output. (The returned string would have any successfully parsed tokens removed or *eaten*)
+- More Effecient: Reuse the same string and modify a *position* variable
+- Use the Go io.Reader (or better, the io.RuneScanner) interface
+
+Side Effects
+
+- Follows the *visitor* *pattern*
+- Traditionally: Pass a function to the parser that will process the results on successful match
+- The Go Way: Send the result on a channel!
+
+* Tangent on Parse Results
+- The *side* *effect* of a parser is to produce some data structure
+- Typically a Parse Tree
+- What is a Parse Tree Node?
+- Could be anything -> Depends on the Application
+- Simplest answer is to use the dreaded *empty* *interface*
+- Could get fancier:
+- Use a struct with a match location, length, and enum representing the type
+
+* The Traditional Method
+.link ipv4ParserTraditional.go
+
+* Some Go Flavor
+.link ipv4ParserChannel.go
+
+* Tangents on the Parser Output Channel
+- Parse results come into the channel in reverse order
+- Last successful parse first / bottom of the stack first
+- Later results from the channel rely on results that were sent earlier in the channel
+- But this guaranees the channel will only send results when all the necessary information is available
+- Treat the Channel like a stack
+
+* Optimizations?
+- Parser Combinators are recursive by nature
+- Go is not optimized for recursion
+- Still fast because Go is fast
+- Very good for prototyping or small (read toy) languages
+- Can be used to prototype and then re-implement using a LALR generator like YACC
+- You could unroll the recursion by hand (or possibly write a tool?)
+- Basically would mean doing the work of the combinators by hand. (Combinators are the source of the recursion)
+- All parsers are state machines.
+- Combinators are just parsers + boolean switches (also state machines) and loops (also state machines)
+- The resulting code would look horrible, but would be much more effecient.
+- If you are insane: you could inline the basic parsers as well.
