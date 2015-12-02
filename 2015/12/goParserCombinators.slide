@@ -34,6 +34,12 @@ rayimber@gmail.com
 - Regex on Steroids (can parse full CFG's, which are more powerful that regural grammars)
 - URL parsing: Crawling, Routing
 
+* 3 Stages of Parsing
+- Lexical Analysis (Valid symbols / characters)
+- Syntactic Analysis (Valid position and placement of tokens / lexemes)
+- Semantic Analaysis (Valid meaning of the syntax tree)
+- Depending on the software design - these phases can be combined or seperated
+
 * Parser Construction methods
 - Table Based Parsing / State Machine (LALR)
 - Recursive Descent Parser
