@@ -151,12 +151,14 @@ The `testing.T` interface to be precise
 .code fib_test.go /STARTBENCH OMIT/,/ENDBENCH OMIT/
 
 * Testable Documentation
+- This is the secret to Godoc
+.link https://godoc.org/golang.org/x/tools/cmd/godoc Godoc docs!
 - Functions of the form `ExampleXxx()`
 - Can also be followed by a suffix, to specify what type of example.
 - Use A special comment to verify the output.
 	func ExampleHello() {
-        fmt.Println("hello")
-        // Output: hello
+    fmt.Println("hello")
+    // Output: hello
 	}
 
 .link http://golang.org/pkg/testing/ Docs!

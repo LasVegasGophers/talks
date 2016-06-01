@@ -1,0 +1,136 @@
+GoDoc
+Writing Documentation the Go Way
+
+1 Jun 2016
+Tags: go documentation comments
+
+Ray Imber
+Software Engineer / Lego Man
+rayimber@gmail.com
+
+* The Go Philosophy on Documentation
+"Godoc comments are just good comments, the sort you would want to read even if godoc didn't exist."
+
+- No special language constructs (Python Docstring)
+- No special syntax (Java Javadoc)
+- Regular comment directly preceding a declaration with no intervening blank line
+
+* What can be documented
+Just about anything
+
+- types
+- variables
+- constants
+- functions
+- even a package
+
+* Documentation Conventions
+
+- A complete sentence
+- Begins with the name of the element it describes
+- Allows generation of documentation for a variety of formats
+- Makes it read better when tools truncate... :-P
+
+* HTML Formatting rules
+
+- Use a blank line to separate paragraphs
+- Pre-formatted text such as code snippets must be indented relative to the surrounding comment text
+- URLs will be converted to HTML links; no special markup is necessary.
+
+* Package level comments
+
+- Should provide general package documentation
+- Can be short or long
+- For larger introductory documentation the doc.go convention can be used
+
+* Doc.go
+
+- The package comment is placed in its own file: doc.go
+- Contains only introductory comments and a package clause
+- Keep in mind: first sentence will appear in godoc's package list
+.link https://golang.org/src/encoding/gob/doc.go @see the Gob package for a good example
+
+* Some Exceptions
+
+- Comments that are not adjacent to a top-level declaration are omitted
+
+- Exception: Top-level comments that begin with the word "BUG(who)” are recognized as known bugs
+- Included in the "Bugs” section of the package documentation
+- The "who” part should be the user name of someone who could provide more information
+
+* Deprecation
+
+- Add a paragraph to the doc comment that begins with "Deprecated:"
+- Followed by some information about the deprecation
+
+* Documentation Organization
+
+- Godoc associates methods with their receivers and attaches their documentation to their receiver type
+- Functions that construct an instance of a type (or a pointer to it) are associated with the returned type
+- Examples show up at the below the function documentation for that function
+.link https://godoc.org/github.com/fluhus/godoc-tricks @see Godoc Code Tricks
+
+* Fake Enums
+
+- Go does not have enums
+- You can use types and constants to mock them for documentation purposes
+- Create a constant clause where all the constants are of the same type
+- It will be attached to that type's Godoc
+.link https://godoc.org/github.com/fluhus/godoc-tricks @see Godoc Code Tricks
+
+* Examples
+Examples are tests!
+
+- They live in the _test.go file for the package
+- They are run with the test suite and must pass just like other unit tests
+- They are runnable in the Godoc html formatted documentation
+- Begin with the word Example and then the function name:
+  func Foo {}
+  func ExampleFoo() {
+    ... code ...
+    // Output: testable
+  }
+- Take no arguments
+- Optionally uses a special "Output" comment to become a valid test
+
+* Example Output
+What does it mean that the Example function "passes" a test suite?
+
+- The function is run as part of the test suite
+- The testing framework captures data written to standard output
+- Then compares the output against the example's "Output:" comment
+- The test passes if the test's output matches its output comment
+
+.link https://blog.golang.org/examples @see the Go Blog
+
+* No Output
+If the output comment is omitted
+
+- The example function is compiled but not executed
+- Useful for demonstrating code that cannot run as unit tests
+- Examples include functions that make network or database calls
+- Go guarantees the example at least compiles
+
+* Example function naming conventions
+
+- Example for the Foo function or type
+  func ExampleFoo() {}
+
+- Example for the Qux method of type Bar
+  func ExampleBar_Qux() {}
+
+- Example for the package as a whole
+  func Example() {}
+
+* Large Examples
+"whole file example"
+
+- Use to show an implementation of an interface for example (methods cannot be declared inside a function body)
+- A whole new file that ends in _test.go
+- Contains exactly one example function
+- Contains at least one other package-level declaration
+- Contains no test or benchmark functions
+- Godoc will show the entire file as the example
+- A package can contain multiple whole file examples
+- One example per file
+.link https://golang.org/pkg/sort/ @see the sort package for a good example
