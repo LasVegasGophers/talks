@@ -134,3 +134,16 @@ If the output comment is omitted
 - A package can contain multiple whole file examples
 - One example per file
 .link https://golang.org/pkg/sort/ @see the sort package for a good example
+
+* The Actual GoDoc command
+
+- Without the -http flag: Runs in command-line mode and prints plain text documentation to standard output and exits
+  godoc [flag] package [name ...]
+- With the -http flag: Runs as a web server and presents the documentation as a web page
+  godoc -http=:6060
+
+- Has lots of flags
+- Useful for searching the docs as well as generating them
+- Like unix `man` and `javadoc` had a baby
+
+.link https://godoc.org/golang.org/x/tools/cmd/godoc @see the docs for all the gory details
